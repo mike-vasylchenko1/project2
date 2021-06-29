@@ -46,4 +46,4 @@ jobs:
         run: |
           docker stop ${{ steps.global_env.outputs.IMAGE_NAME }} || true
           docker rm ${{ steps.global_env.outputs.IMAGE_NAME }} || true
-          docker run -d --name ${{ steps.global_env.outputs.IMAGE_NAME }}-p 8083:8080 ${{ steps.global_env.outputs.DOCKERHUB_IMAGE_NAME }}
+          docker run -d --name ${{ steps.global_env.outputs.IMAGE_NAME }} -p 8083:8080 ${{ steps.global_env.outputs.DOCKERHUB_IMAGE_NAME }}
