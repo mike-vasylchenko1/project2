@@ -23,10 +23,6 @@ jobs:
 #     Set global environment variables:
       - name: set global env
         id: global_env
-#       переменную IMAGE_NAME формируем из названия репозитория
-#                       "owner/repo-name"
-#       берем все что после   /  чтобы задать имя образа
-#       set-output выставляет переменную в этом шаге
         run: |
           echo "::set-output name=IMAGE_NAME::${GITHUB_REPOSITORY#*/}"
           echo "::set-output name=DOCKERHUB_IMAGE_NAME::docker.pkg.github.com/${GITHUB_REPOSITORY}/${GITHUB_REPOSITORY#*/}"
@@ -44,3 +40,10 @@ jobs:
         env:
           IMAGE_NAME: $GITHUB_REPOSITORY
         run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/${{ steps.global_env.outputs.IMAGE_NAME }}"
+
+#     Restart container from new image:
+      - name: Rerun Container
+        run: |
+          docker stop ${{ steps.global_env.outputs.IMAGE_NAME }}
+          docker rm ${{ steps.global_env.outputs.IMAGE_NAME }}
+          docker run -d --name ${{ steps.global_env.outputs.IMAGE_NAME }} ${{ steps.global_env.outputs.DOCKERHUB_IMAGE_NAME }}
