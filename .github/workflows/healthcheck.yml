@@ -29,7 +29,7 @@ jobs:
 #        if: failure()
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
-#          overwrite: |
+          overwrite: "{title: `Application is not healthy! ${{ steps.ping.outputs.status }}`}"
 #            Health check of the:
 #            localhost:8083/actuator/health
 #            failed with the result:
