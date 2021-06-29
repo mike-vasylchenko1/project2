@@ -44,6 +44,6 @@ jobs:
 #     Restart container from new image:
       - name: Rerun Container
         run: |
-          docker stop ${{ steps.global_env.outputs.IMAGE_NAME }}
-          docker rm ${{ steps.global_env.outputs.IMAGE_NAME }}
+          docker stop ${{ steps.global_env.outputs.IMAGE_NAME }} || true
+          docker rm ${{ steps.global_env.outputs.IMAGE_NAME }} || true
           docker run -d --name ${{ steps.global_env.outputs.IMAGE_NAME }} ${{ steps.global_env.outputs.DOCKERHUB_IMAGE_NAME }}
