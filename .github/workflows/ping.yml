@@ -1,0 +1,35 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron:  '*/5 * * * *'
+
+jobs:
+
+  ping:
+    runs-on: self-hosted
+    steps:
+      - name: curl actuator
+        id: ping
+        run: |
+          echo "::set-output name=status::$(curl localhost:8083/actuator/health)"
+
+      - name: health check
+        run: |
+          if [[ ${{ steps.ping.outputs.status }} != *"UP"* ]]; then
+            echo "health check is failed"
+            exit 1
+          fi
+          echo "It's OK"
+
+      - uses: actions/checkout@master
+      - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@master
+        if: failure()
+        with:
+          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+          overwrite: |
+            Health check of the:
+            localhost:8083/actuator/health
+            failed with the result:
+            ${{ steps.ping.outputs.status }}
